@@ -14,9 +14,9 @@ def main():
     elif choice == 4:
         custom_plan_name, custom_plan = get_custom_plan()
     
-    print(f"\n📊 Your Selected Budget Plan: {custom_plan_name}")
-    for category, percentage in custom_plan.items():
-        print(f"   -{category}: {percentage}%")
+        print(f"\n📊 Your Selected Budget Plan: {custom_plan_name}")
+        for category, percentage in custom_plan.items():
+            print(f"   -{category}: {percentage}%")
 
 
 if __name__ == "__main__":
