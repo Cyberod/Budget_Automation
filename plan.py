@@ -20,11 +20,19 @@ def choose_budget_plan():
 
 def get_custom_plan():
     """"Allows user to create a custom budget plan"""
-    custom_plan_name = input("Enter a name for your custom budget plan: ")
+
+    # The System will ask the user to enter a name for the custom budget plan.
+    while True:
+        custom_plan_name = input("Enter a name for your custom budget plan: ")
+        if custom_plan_name:
+            break
+        print("Custom plan name cannot be empty. Please enter a valid name.")
+
+
     custom_plan = {}
     total_percentage = 0
 
-    print("Enter your custom budget plan:")
+    print(f"creating a custom budget plan for {custom_plan_name}")
 
     while total_percentage < 100:
         category = input("Enter a category name or type 'done' to finish: ").strip()
@@ -49,4 +57,6 @@ def get_custom_plan():
             except ValueError:
                 print("Invalid input. Please enter a numeric percentage.")
 
-        return custom_plan_name, custom_plan
+    return custom_plan_name, custom_plan
+
+        
