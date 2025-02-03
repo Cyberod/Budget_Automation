@@ -1,26 +1,52 @@
-def budget_split(income):
-    expenses = income * 0.50
-    investment = income * 0.30
-    savings = income * 0.20
+def choose_budget_plan():
+    """Allows user to select a predefined or custom budget plan."""
+    print("Choose a budget plan:")
+    print("1. 50-30-20 (Conservative)")
+    print("2. 60-20-20 (Moderate)")
+    print("3. 70-10-20 (Aggressive)")
+    print("4. Custom Budget Plan")
 
-    return expenses, investment, savings
+    while True:
+        try:
+            choice = int(input("Enter your choice (1-4): "))
+            if choice in [1, 2, 3, 4]:
+                return choice
+            else:
+                print("Invalid choice. Please enter a number between 1 and 4.")	
+        except ValueError:
+            print("Invalid input. Please enter a number.")
 
-def main():
-    try:
-        income = float(input("Enter your total income: "))
-        if income <= 0:
-            print("Please enter a valid positive number for income.")
-            return
+        
 
-        expenses, investment, savings = budget_split(income)
+def get_custom_plan():
+    """"Allows user to create a custom budget plan"""
+    custom_plan_name = input("Enter a name for your custom budget plan: ")
+    custom_plan = {}
+    total_percentage = 0
 
-        print("\nBudget Breakdown:")
-        print(f"Expenses (50%): ${expenses:.2f}")
-        print(f"Investment (30%): ${investment:.2f}")
-        print(f"Savings (20%): ${savings:.2f}")
+    print("Enter your custom budget plan:")
 
-    except ValueError:
-        print("Invalid input. Please enter a numeric value.")
+    while total_percentage < 100:
+        category = input("Enter a category name or type 'done' to finish: ").strip()
+        percentage = int(input("Enter the percentage for {}: ".format(category)))
 
-if __name__ == "__main__":
-    main()
+        if category.lower() == 'done':
+            if total_percentage == 100:
+                break
+            else:
+                print(f"The total percentage must be{total_percentage}%. Please adjust your percentages.")
+                continue
+
+        while True:
+            try:
+                percentage = float(input("Enter the percentage for {}: ".format(category)))
+                if percentage <= 0 or (total_percentage + percentage) > 100:
+                    print("Invalid percentage. Please enter a positive value less than or equal to 100.")
+                else:
+                    custom_plan[category] = percentage
+                    total_percentage += percentage
+                    break
+            except ValueError:
+                print("Invalid input. Please enter a numeric percentage.")
+
+        return custom_plan_name, custom_plan
