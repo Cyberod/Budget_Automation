@@ -1,18 +1,31 @@
+from storage import save_budget_plan, load_budget_plans
+
+
 def choose_budget_plan():
     """Allows user to select a predefined or custom budget plan."""
     print("Choose a budget plan:")
     print("1. 50-30-20 (Conservative)")
     print("2. 60-20-20 (Moderate)")
     print("3. 70-10-20 (Aggressive)")
-    print("4. Custom Budget Plan")
+
+    # load and display saved custom plans
+
+    saved_plans = load_budget_plans()
+    start_index = 4
+
+    for i, plan_name in enumerate(saved_plans.keys(), start=start_index):
+        print(f"{i}. {plan_name} (Custom)")
+
+        print(f"{len(saved_plans) + start_index}. Create new custom Plan")
 
     while True:
         try:
-            choice = int(input("Enter your choice (1-4): "))
-            if choice in [1, 2, 3, 4]:
+            max_choice = len(saved_plans) + start_index 
+            choice = int(input(f"Enter your chouce (1 - {max_choice})"))
+            if 1 <= choice <= max_choice:
                 return choice
             else:
-                print("Invalid choice. Please enter a number between 1 and 4.")	
+                print("Invalid choice. Please enter a valid option.")
         except ValueError:
             print("Invalid input. Please enter a number.")
 
