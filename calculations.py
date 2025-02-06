@@ -2,7 +2,7 @@ def calculate_category_amounts(total_amount, budget_plan):
     """Calculate the amount for each category based on the budget plan.
         Args:
         total_amount (float): The total amount to be distributed.
-        budget_plan (dict): The budget plan with category percentages.
+        budget_plan (dict): A dictionary containing categories and their percentage allocations
 
         Returns:
         dict: A dictionary with category names as keys and their respective amounts as values.
