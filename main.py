@@ -2,6 +2,7 @@ from plan import choose_budget_plan, get_custom_plan
 from utils import get_valid_number
 from calculations import calculate_category_amounts
 from storage import save_budget_plan, load_budget_plans
+from subcategories import get_subcategories
 
 def main():
     print("💰 Welcome to the Budget Automation System! 💰")
@@ -31,18 +32,28 @@ def main():
         budget_plan = saved_plans[plan_name]
 
     # Calculate amounts for each category
-    
     category_amounts = calculate_category_amounts(total_amount, budget_plan)
 
-    # Display the budget plan
-    print(f"\n📊 Your Budget Breakdown for {plan_name}")
-    print(f"Total Amount: ${total_amount:.2f}")
-    print(f" Category Breakdown")
+    #store subcategories for all categories
+    category_subcategories = {}
 
     for category, amount in category_amounts.items():
+        if input(f"Would you like to add subcategories for {category}? (y/n): ").lower() == 'y':
+            category_subcategories[category] = get_subcategories(category, amount)
+    
+    # Print final complete breakdown
+    print(f"\n📊 Your Budget Breakdown for {plan_name}")
+    print(f"Total Amount: ${total_amount:,.2f}")
+    print("\nCategory Breakdown:")
+    
+    for category, amount in category_amounts.items():
         percentage = budget_plan[category]
-        print(f"    - {category}: ({percentage}%) : ${amount:.2f} ")
-
+        print(f"\n{category}: ${amount:.2f} ({percentage}%)")
+        
+        if category in category_subcategories:
+            for subcat, details in category_subcategories[category].items():
+                print(f"   - {subcat}: ${details['amount']:.2f} ({details['percentage']}%)")
 
 if __name__ == "__main__":
     main()
+
