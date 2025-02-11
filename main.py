@@ -13,6 +13,8 @@ def main():
     choice = choose_budget_plan()
     saved_plans = load_budget_plans()
 
+    max_choice = len(saved_plans) + 4
+
     if choice == 1:
         budget_plan = {"Expenses": 50, "Investment": 30, "Savings": 20}
         plan_name = "Conservative (50-30-20)"
@@ -22,7 +24,7 @@ def main():
     elif choice == 3:
         budget_plan = {"Expenses": 70, "Investment": 10, "Savings": 20}
         plan_name = "Aggressive (70-10-20)"
-    elif choice == len(saved_plans) + 4:
+    elif choice == max_choice:
         plan_name, budget_plan = get_custom_plan()
         save_budget_plan(plan_name, budget_plan)
 
