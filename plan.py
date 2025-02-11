@@ -1,3 +1,4 @@
+
 from storage import save_budget_plan, load_budget_plans
 
 
@@ -16,7 +17,7 @@ def choose_budget_plan():
     for i, plan_name in enumerate(saved_plans.keys(), start=start_index):
         print(f"{i}. {plan_name} (Custom)")
 
-        print(f"{len(saved_plans) + start_index}. Create new custom Plan")
+    print(f"{len(saved_plans) + start_index}. Create new custom Plan")
 
     while True:
         try:
@@ -88,5 +89,8 @@ def get_custom_plan():
 
         if total_percentage == 100:
             break
-    
+
+        # Save the custom plan automatically after creation
+        save_budget_plan(custom_plan_name, custom_plan)
+        print(f"Custom plan '{custom_plan_name}' has been saved sucessfully!.")
     return custom_plan_name, custom_plan
