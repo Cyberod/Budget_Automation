@@ -50,7 +50,7 @@ def get_custom_plan():
     custom_plan = {}
     total_percentage = 0
 
-    print(f"creating a custom budget plan for {custom_plan_name}")
+    print(f"Creating a custom budget plan for {custom_plan_name}")
 
     while total_percentage < 100:
         category = input("Enter a category (or 'done' to exit custom plan): ")
