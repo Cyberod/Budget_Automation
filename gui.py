@@ -1,90 +1,136 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from plan import get_custom_plan
+from utils import get_valid_number
 from calculations import calculate_category_amounts
-from storage import load_budget_plans, save_budget_plan
+from storage import save_budget_plan, load_budget_plans
 from subcategories import get_subcategories
 
-class BudgetApp(tk.Tk):
-    def __init__(self):
-        super().__init__()
+def run_gui():
+    root = tk.Tk()
+    root.title("Budget Automation System")
+    root.geometry("600x500")
+    
+    def create_custom_plan():
+        custom_window = tk.Toplevel(root)
+        custom_window.title("Create Custom Budget Plan")
+        custom_window.geometry("400x300")
         
-        self.title("Budget Automation System")
-        self.geometry("800x600")
+        ttk.Label(custom_window, text="Enter Custom Plan Name:").pack()
+        plan_name_entry = ttk.Entry(custom_window)
+        plan_name_entry.pack()
         
-        # Main container
-        self.main_frame = ttk.Frame(self, padding="10")
-        self.main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        category_entries = []
+        category_labels = []
+        percentage_entries = []
         
-        # Amount Entry
-        ttk.Label(self.main_frame, text="Enter Total Amount ($):").grid(row=0, column=0, pady=10)
-        self.amount_entry = ttk.Entry(self.main_frame)
-        self.amount_entry.grid(row=0, column=1)
+        def add_category():
+            frame = ttk.Frame(custom_window)
+            frame.pack()
+            
+            category_label = ttk.Label(frame, text="Category:")
+            category_label.pack(side=tk.LEFT)
+            category_labels.append(category_label)
+            
+            category_entry = ttk.Entry(frame)
+            category_entry.pack(side=tk.LEFT)
+            category_entries.append(category_entry)
+            
+            percentage_label = ttk.Label(frame, text="Percentage:")
+            percentage_label.pack(side=tk.LEFT)
+            
+            percentage_entry = ttk.Entry(frame)
+            percentage_entry.pack(side=tk.LEFT)
+            percentage_entries.append(percentage_entry)
         
-        # Budget Plan Selection
-        ttk.Label(self.main_frame, text="Select Budget Plan:").grid(row=1, column=0, pady=10)
-        self.plan_var = tk.StringVar()
-        self.plan_combo = ttk.Combobox(self.main_frame, textvariable=self.plan_var)
-        self.update_plan_options()
-        self.plan_combo.grid(row=1, column=1)
+        ttk.Button(custom_window, text="Add Category", command=add_category).pack()
         
-        # Calculate Button
-        ttk.Button(self.main_frame, text="Calculate Budget", 
-                  command=self.calculate_budget).grid(row=2, column=0, columnspan=2, pady=20)
+        def save_custom_plan():
+            plan_name = plan_name_entry.get().strip()
+            if not plan_name:
+                messagebox.showerror("Invalid Input", "Plan name cannot be empty.")
+                return
+            
+            budget_plan = {}
+            total_percentage = 0
+            
+            for category_entry, percentage_entry in zip(category_entries, percentage_entries):
+                category = category_entry.get().strip()
+                try:
+                    percentage = float(percentage_entry.get())
+                except ValueError:
+                    messagebox.showerror("Invalid Input", "Enter valid percentage values.")
+                    return
+                
+                if category in budget_plan:
+                    messagebox.showerror("Duplicate Category", f"Category '{category}' already exists.")
+                    return
+                
+                budget_plan[category] = percentage
+                total_percentage += percentage
+                
+            if total_percentage != 100:
+                messagebox.showerror("Invalid Percentage", "Total percentage must add up to 100%.")
+                return
+            
+            save_budget_plan(plan_name, budget_plan)
+            plan_choice['values'] = list(load_budget_plans().keys())
+            messagebox.showinfo("Success", "Custom budget plan saved successfully.")
+            custom_window.destroy()
         
-        # Results Display
-        self.result_text = tk.Text(self.main_frame, height=15, width=60)
-        self.result_text.grid(row=3, column=0, columnspan=2, pady=10)
-
-    def update_plan_options(self):
-        saved_plans = load_budget_plans()
-        options = [
-            "Conservative (50-30-20)",
-            "Moderate (60-20-20)",
-            "Aggressive (70-10-20)",
-            "Create Custom Plan"
-        ] + list(saved_plans.keys())
-        self.plan_combo['values'] = options
-        self.plan_combo.set(options[0])
-
-    def calculate_budget(self):
+        ttk.Button(custom_window, text="Save Plan", command=save_custom_plan).pack()
+    
+    def calculate_budget():
         try:
-            total_amount = float(self.amount_entry.get())
+            total_amount = float(amount_entry.get())
             if total_amount <= 0:
-                messagebox.showerror("Error", "Amount must be greater than zero")
+                messagebox.showerror("Invalid Input", "Amount must be greater than zero.")
                 return
         except ValueError:
-            messagebox.showerror("Error", "Please enter a valid amount")
+            messagebox.showerror("Invalid Input", "Please enter a valid number.")
             return
-
-        plan_choice = self.plan_var.get()
         
-        if plan_choice == "Conservative (50-30-20)":
+        choice = plan_choice.get()
+        saved_plans = load_budget_plans()
+        
+        if choice == "Conservative (50-30-20)":
             budget_plan = {"Expenses": 50, "Investment": 30, "Savings": 20}
-        elif plan_choice == "Moderate (60-20-20)":
+        elif choice == "Moderate (60-20-20)":
             budget_plan = {"Expenses": 60, "Investment": 20, "Savings": 20}
-        elif plan_choice == "Aggressive (70-10-20)":
+        elif choice == "Aggressive (70-10-20)":
             budget_plan = {"Expenses": 70, "Investment": 10, "Savings": 20}
-        elif plan_choice == "Create Custom Plan":
-            self.open_custom_plan_window()
-            return
         else:
-            saved_plans = load_budget_plans()
-            budget_plan = saved_plans[plan_choice]
-
+            budget_plan = saved_plans.get(choice, {})
+        
         category_amounts = calculate_category_amounts(total_amount, budget_plan)
-        self.display_results(total_amount, plan_choice, category_amounts, budget_plan)
-
-    def display_results(self, total_amount, plan_name, category_amounts, budget_plan):
-        self.result_text.delete(1.0, tk.END)
-        self.result_text.insert(tk.END, f"📊 Budget Breakdown for {plan_name}\n")
-        self.result_text.insert(tk.END, f"Total Amount: ${total_amount:,.2f}\n\n")
+        
+        # Display results
+        result_text.delete(1.0, tk.END)
+        result_text.insert(tk.END, f"\nBudget Breakdown for {choice}\n")
+        result_text.insert(tk.END, f"Total Amount: ${total_amount:,.2f}\n\n")
         
         for category, amount in category_amounts.items():
-            percentage = budget_plan[category]
-            self.result_text.insert(tk.END, 
-                f"{category}: ${amount:,.2f} ({percentage}%)\n")
+            result_text.insert(tk.END, f"{category}: ${amount:.2f} ({budget_plan[category]}%)\n")
+    
+    # UI Components
+    ttk.Label(root, text="Enter Total Budget:").pack()
+    amount_entry = ttk.Entry(root)
+    amount_entry.pack()
+    
+    ttk.Label(root, text="Select Budget Plan:").pack()
+    plan_choice = ttk.Combobox(root, values=[
+        "Conservative (50-30-20)", "Moderate (60-20-20)", "Aggressive (70-10-20)", "Custom Plan"
+    ] + list(load_budget_plans().keys()))
+    plan_choice.pack()
+    
+    ttk.Button(root, text="Create Custom Plan", command=create_custom_plan).pack()
+    ttk.Button(root, text="Calculate Budget", command=calculate_budget).pack()
+    
+    result_text = tk.Text(root, height=10, width=50)
+    result_text.pack()
 
-def run_gui():
-    app = BudgetApp()
-    app.mainloop()
+    
+    root.mainloop()
+
+if __name__ == "__main__":
+    launch_gui()
