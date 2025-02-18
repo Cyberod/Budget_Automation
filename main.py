@@ -4,8 +4,9 @@ from gui import run_gui
 import sys
 
 
+
 def main():
-    print("💰 Welcome to the Budget Automation System! 💰")
+    print(" 💰 Welcome to the Budget Automation System! 💰")
     print("1. Graphical User Interface")
     print("2. Command Line Interface")
     

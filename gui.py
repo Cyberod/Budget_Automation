@@ -133,4 +133,4 @@ def run_gui():
     root.mainloop()
 
 if __name__ == "__main__":
-    launch_gui()
+    run_gui()

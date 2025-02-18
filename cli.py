@@ -42,6 +42,7 @@ def run_cli():
     for category, amount in category_amounts.items():
         if input(f"Would you like to add subcategories for {category}? (y/n): ").lower() == 'y':
             category_subcategories[category] = get_subcategories(category, amount)
+            save_budget_plan(plan_name, budget_plan, category_subcategories)
     
     # Print final complete breakdown
     print(f"\n📊 Your Budget Breakdown for {plan_name}")

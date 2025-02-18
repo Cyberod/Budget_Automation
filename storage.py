@@ -3,10 +3,13 @@ import os
 
 FILE_PATH = 'budget_plans.json'
 
-def save_budget_plan(plan_name, budget_plan):
+def save_budget_plan(plan_name, budget_plan, subcategories=None):
     """Save custom budget plans to storage."""
     plans = load_budget_plans()  # Load existing plans safely
-    plans[plan_name] = budget_plan  
+    if subcategories:
+        plans[plan_name] = {"categories": budget_plan, "subcategories": subcategories}
+    else:
+        plans[plan_name] = budget_plan  
 
     with open(FILE_PATH, 'w') as f:
         json.dump(plans, f, indent=4)

@@ -1,8 +1,27 @@
 {
-    "Business": {
-        "Expense": 40.0,
-        "Investment": 40.0,
-        "charity": 10.0,
-        "savings": 10.0
+    "Biz": {
+        "categories": {
+            "Exp": 40.0,
+            "Inv": 50.0,
+            "Sav": 10.0
+        },
+        "subcategories": {
+            "Exp": {
+                "Tran": {
+                    "percentage": 70.0,
+                    "amount": 5600.0
+                },
+                "Rent": {
+                    "percentage": 30.0,
+                    "amount": 2400.0
+                }
+            },
+            "Inv": {
+                "Crypto": {
+                    "percentage": 100.0,
+                    "amount": 10000.0
+                }
+            }
+        }
     }
 }

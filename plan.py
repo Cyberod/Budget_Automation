@@ -37,16 +37,28 @@ def get_custom_plan():
 
     # The System will ask the user to enter a name for the custom budget plan.
     while True:
-        custom_plan_name = input("Enter a name for your custom budget plan: ")
+        custom_plan_name = str(input("Enter a name for your custom budget plan: "))
         try:
-            if str(custom_plan_name):
-                break
-            print("Custom plan name cannot be empty. Please enter a valid name.")
+            #check if name is empty
+            if not custom_plan_name:
+                print("Custom plan name cannot be empty. Please enter a valid name.")
+                continue
+
+            # check if name is only numbers
+            if custom_plan_name.isdigit():
+                print("Plan must contain Letters or a combination of Letters and numbers")
+                continue
+
+            if not any(char.isalpha() for char in custom_plan_name):
+                print("plan name must contain at least one letter")
+                continue
+            
+            break
+            
         except ValueError:
             print("Input only letters for the category name.")
         
 
-    
     custom_plan = {}
     total_percentage = 0
 
@@ -73,6 +85,7 @@ def get_custom_plan():
         if category in custom_plan:
             print(f"Category '{category}' already exists. Please choose a different category name.")
             continue
+
 
         # Get and validate percentage
         while True:
