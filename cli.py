@@ -14,6 +14,7 @@ def run_cli():
     saved_plans = load_budget_plans()
 
     max_choice = len(saved_plans) + 4
+    category_subcategories = {}
 
     if choice == 1:
         budget_plan = {"Expenses": 50, "Investment": 30, "Savings": 20}
@@ -26,29 +27,57 @@ def run_cli():
         plan_name = "Aggressive (70-10-20)"
     elif choice == max_choice:
         plan_name, budget_plan = get_custom_plan()
-        #save_budget_plan(plan_name, budget_plan)
+
+        # Calculate amounts for each category
+        category_amounts = calculate_category_amounts(total_amount, budget_plan)
+
+        for category, amount in category_amounts.items():
+            if input(f"Would you like to add subcategories for {category}? (y/n): ").lower() == 'y':
+                category_subcategories[category] = get_subcategories(category, amount)
+        save_budget_plan(plan_name, budget_plan, {
+            category: {
+                subcat: {"percentage": details["percentage"]}
+                for subcat, details in subcats.items()
+        }
+            for category, subcats in category_subcategories.items()
+            })
+        
 
     else:
         # Get the saved custom Plan
         plan_name = list(saved_plans.keys())[choice -4]
-        budget_plan = saved_plans[plan_name]
+        saved_plan = saved_plans[plan_name]
 
-    # Calculate amounts for each category
-    category_amounts = calculate_category_amounts(total_amount, budget_plan)
+        # Extracts the categories and Percentages from the saved custom Plan
+        budget_plan = {
+            category: data["percentage"]
+            for category, data in saved_plan["categories"].items()
+        }
 
-    #store subcategories for all categories
-    category_subcategories = {}
+        # calsulates the amount for each category
+        category_amounts = calculate_category_amounts(total_amount, budget_plan)
 
-    for category, amount in category_amounts.items():
-        if input(f"Would you like to add subcategories for {category}? (y/n): ").lower() == 'y':
-            category_subcategories[category] = get_subcategories(category, amount)
-            save_budget_plan(plan_name, budget_plan, {
-                category: {
-                    subcat: {"percentage": details["percentage"]}
-                    for subcat, details in subcats.items()
-                }
-                for category, subcats in category_subcategories.items()
-            })
+        # Initializes subcategories with saved data
+        category_subcategories = {}
+        for category, data in saved_plan["categories"].items():
+            if data["subcategories"]:
+                subcategory_amounts = {}
+                category_amount = category_amounts[category]
+
+                for subcat, subdata in data["subcategories"].items():
+                    amount = category_amount * (subdata["percentage"] / 100)
+                    subcategory_amounts[subcat] = {
+                        "percentage": subdata["percentage"],
+                        "amount": round(amount, 2)
+                    }
+
+                category_subcategories[category] = subcategory_amounts
+
+
+
+
+
+
     
     # Print final complete breakdown
     print(f"\n📊 Your Budget Breakdown for {plan_name}")
