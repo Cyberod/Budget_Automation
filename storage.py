@@ -3,13 +3,24 @@ import os
 
 FILE_PATH = 'budget_plans.json'
 
-def save_budget_plan(plan_name, budget_plan, subcategories=None):
+def save_budget_plan(plan_name, budget_plan, subcategories):
     """Save custom budget plans to storage."""
     plans = load_budget_plans()  # Load existing plans safely
-    if subcategories:
-        plans[plan_name] = {"categories": budget_plan, "subcategories": subcategories}
-    else:
-        plans[plan_name] = budget_plan  
+
+    plan_data = {
+        "categories": {}
+    }
+
+    for category, percentage in budget_plan.items():
+        plan_data['categories'][category] = {
+            "percentage": percentage,
+            "subcategories": {
+                subcat: {"percentage": details["percentage"]}
+                for subcat, details in subcategories.get(category, {}).items()
+            }
+        }
+
+    plans[plan_name] = plan_data
 
     with open(FILE_PATH, 'w') as f:
         json.dump(plans, f, indent=4)

@@ -1,26 +1,31 @@
 {
     "Biz": {
         "categories": {
-            "Exp": 40.0,
-            "Inv": 50.0,
-            "Sav": 10.0
-        },
-        "subcategories": {
-            "Exp": {
-                "Tran": {
-                    "percentage": 70.0,
-                    "amount": 5600.0
-                },
-                "Rent": {
-                    "percentage": 30.0,
-                    "amount": 2400.0
+            "Expense": {
+                "percentage": 40.0,
+                "subcategories": {
+                    "Logistic": {
+                        "percentage": 40.0
+                    },
+                    "Rent": {
+                        "percentage": 60.0
+                    }
                 }
             },
-            "Inv": {
-                "Crypto": {
-                    "percentage": 100.0,
-                    "amount": 10000.0
+            "Invest": {
+                "percentage": 50.0,
+                "subcategories": {
+                    "Crypto": {
+                        "percentage": 50.0
+                    },
+                    "Real Estate": {
+                        "percentage": 50.0
+                    }
                 }
+            },
+            "Savings": {
+                "percentage": 10.0,
+                "subcategories": {}
             }
         }
     }

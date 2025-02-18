@@ -104,6 +104,6 @@ def get_custom_plan():
             break
 
         # Save the custom plan automatically after creation
-        save_budget_plan(custom_plan_name, custom_plan)
-        print(f"Custom plan '{custom_plan_name}' has been saved sucessfully!.")
+        #save_budget_plan(custom_plan_name, custom_plan)
+        #print(f"Custom plan '{custom_plan_name}' has been saved sucessfully!.")
     return custom_plan_name, custom_plan

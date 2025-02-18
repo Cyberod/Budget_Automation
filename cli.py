@@ -26,7 +26,7 @@ def run_cli():
         plan_name = "Aggressive (70-10-20)"
     elif choice == max_choice:
         plan_name, budget_plan = get_custom_plan()
-        save_budget_plan(plan_name, budget_plan)
+        #save_budget_plan(plan_name, budget_plan)
 
     else:
         # Get the saved custom Plan
@@ -42,7 +42,13 @@ def run_cli():
     for category, amount in category_amounts.items():
         if input(f"Would you like to add subcategories for {category}? (y/n): ").lower() == 'y':
             category_subcategories[category] = get_subcategories(category, amount)
-            save_budget_plan(plan_name, budget_plan, category_subcategories)
+            save_budget_plan(plan_name, budget_plan, {
+                category: {
+                    subcat: {"percentage": details["percentage"]}
+                    for subcat, details in subcats.items()
+                }
+                for category, subcats in category_subcategories.items()
+            })
     
     # Print final complete breakdown
     print(f"\n📊 Your Budget Breakdown for {plan_name}")
