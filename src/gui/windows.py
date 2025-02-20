@@ -98,7 +98,7 @@ class PlanSelectionWindow:
             btn = ttk.Button(
                 plans_frame,
                 text = plan_name,
-                command=lambda p=plan_id: self.select_predefine_plan(p)
+                command=lambda p=plan_id: self.select_predefined_plan(p)
 
             )
             btn.pack(pady=5)
@@ -132,5 +132,96 @@ class PlanSelectionWindow:
             command = self.create_custom_plan
         )
         create_btn.pack(pady=10)
+
+    def select_predefined_plan(self, plan_id):
+        # Creates predefined plan mappings
+        predefined_plans = {
+            "50-30-20": {
+                "Needs": 50,
+                "Wants": 30,
+                "Savings": 20
+            },
+            "60-20-20": {
+                "Needs": 60,
+                "Wants": 20,
+                "Savings": 20
+            },
+            "70-10-20": {
+                "Needs": 70,
+                "Wants": 10,
+                "Savings": 20
+            }
+        }
+        
+        # Clears current screen
+        self.main_frame.destroy()
+        # Launches amount input window with selected plan(s)
+        AmountInputWindow(self.root, predefined_plans[plan_id])
+
+    def select_custom_plan(self, plan_name):
+        saved_plans = load_budget_plans()
+        selected_plan = saved_plans[plan_name]
+        
+        # Clears current screen
+        self.main_frame.destroy()
+        # Launches amount input window with selected custom plan
+        AmountInputWindow(self.root, selected_plan)
+
+    def create_custom_plan(self):
+        # Clears current screen
+        self.main_frame.destroy()
+        # Launches custom plan creation window
+        CustomPlanWindow(self.root)
+
+
+
+class AmountInputWindow:
+    def __init__(self, root, selected_plan):
+        self.root = root
+        self.plan = selected_plan
+        self.create_widgets()
+    
+    def create_widgets(self):
+        self.main_frame = ttk.Frame(self.root, padding="20")
+        self.main_frame.pack(expand=True, fill='both')
+        
+        title_label = ttk.Label(
+            self.main_frame,
+            text="Enter Total Budget Amount",
+            font=('Arial', 14, 'bold')
+        )
+        title_label.pack(pady=10)
+        
+        # Amount entry field
+        self.amount_var = tk.StringVar()
+        amount_entry = ttk.Entry(
+            self.main_frame,
+            textvariable=self.amount_var
+        )
+        amount_entry.pack(pady=10)
+        
+        # Continue button
+        continue_btn = ttk.Button(
+            self.main_frame,
+            text="Continue",
+            command=self.process_amount
+        )
+        continue_btn.pack(pady=10)
+
+class CustomPlanWindow:
+    def __init__(self, root):
+        self.root = root
+        self.create_widgets()
+    
+    def create_widgets(self):
+        self.main_frame = ttk.Frame(self.root, padding="20")
+        self.main_frame.pack(expand=True, fill='both')
+        
+        title_label = ttk.Label(
+            self.main_frame,
+            text="Create Custom Budget Plan",
+            font=('Arial', 14, 'bold')
+        )
+        title_label.pack(pady=10)
 
 
