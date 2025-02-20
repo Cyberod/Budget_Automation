@@ -423,3 +423,143 @@ class ResultsWindow:
 
 
 
+class SubcategoryWindow:
+    def __init__(self, root, category_name, category_amount):
+        self.root = root
+        self.category_name = category_name
+        self.category_amount = category_amount
+        self.subcategories = {}
+        self.total_percentage = 0
+        self.create_widgets()
+    
+    def create_widgets(self):
+        self.main_frame = ttk.Frame(self.root, padding="20")
+        self.main_frame.pack(expand=True, fill='both')
+        
+        # Title showing category and total amount
+        title_label = ttk.Label(
+            self.main_frame,
+            text=f"Add Subcategories for {self.category_name}\nTotal Amount: ${self.category_amount:,.2f}",
+            font=('Arial', 14, 'bold')
+        )
+        title_label.pack(pady=10)
+        
+        # Subcategory input section
+        input_frame = ttk.LabelFrame(self.main_frame, text="Add Subcategory", padding="10")
+        input_frame.pack(fill='x', pady=10)
+        
+        # Subcategory name input
+        name_frame = ttk.Frame(input_frame)
+        name_frame.pack(fill='x', pady=5)
+        ttk.Label(name_frame, text="Name:").pack(side='left')
+        self.subcat_name_var = tk.StringVar()
+        ttk.Entry(name_frame, textvariable=self.subcat_name_var).pack(side='left', padx=5)
+        
+        # Percentage input
+        percent_frame = ttk.Frame(input_frame)
+        percent_frame.pack(fill='x', pady=5)
+        ttk.Label(percent_frame, text="Percentage:").pack(side='left')
+        self.percentage_var = tk.StringVar()
+        ttk.Entry(percent_frame, textvariable=self.percentage_var, width=10).pack(side='left', padx=5)
+        ttk.Label(percent_frame, text="%").pack(side='left')
+        
+        # Add button
+        ttk.Button(
+            input_frame,
+            text="Add Subcategory",
+            command=self.add_subcategory
+        ).pack(pady=10)
+        
+        # Display frame for added subcategories
+        self.display_frame = ttk.LabelFrame(self.main_frame, text="Added Subcategories", padding="10")
+        self.display_frame.pack(fill='x', pady=10)
+        
+        # Total percentage display
+        self.total_label = ttk.Label(
+            self.main_frame,
+            text="Total Allocated: 0%",
+            font=('Arial', 11, 'bold')
+        )
+        self.total_label.pack(pady=5)
+        
+        # Continue button (initially disabled)
+        self.continue_btn = ttk.Button(
+            self.main_frame,
+            text="Continue",
+            command=self.save_subcategories,
+            state='disabled'
+        )
+        self.continue_btn.pack(pady=10)
+
+
+    def add_subcategory(self):
+        name = self.subcat_name_var.get().strip()
+        percentage = self.percentage_var.get().strip()
+        
+        if self.validate_subcategory_input(name, percentage):
+            percentage_float = float(percentage)
+            amount = self.category_amount * (percentage_float / 100)
+            
+            # Add to subcategories dictionary
+            self.subcategories[name] = {
+                "percentage": percentage_float,
+                "amount": round(amount, 2)
+            }
+            
+            # Update total percentage
+            self.total_percentage += percentage_float
+            
+            # Create display row for this subcategory
+            row_frame = ttk.Frame(self.display_frame)
+            row_frame.pack(fill='x', pady=2)
+            
+            ttk.Label(
+                row_frame,
+                text=f"{name}: {percentage}% (${amount:,.2f})"
+            ).pack(side='left')
+            
+            # Clear input fields
+            self.subcat_name_var.set("")
+            self.percentage_var.set("")
+            
+            # Update total label
+            self.total_label.config(text=f"Total Allocated: {self.total_percentage}%")
+            
+            # Enable continue button if total reaches 100%
+            if self.total_percentage == 100:
+                self.continue_btn['state'] = 'normal'
+            elif self.total_percentage > 100:
+                messagebox.showerror(
+                    "Error",
+                    "Total percentage exceeds 100%. Please adjust subcategories."
+                )
+
+    def validate_subcategory_input(self, name, percentage):
+        if not name:
+            messagebox.showerror("Error", "Subcategory name cannot be empty")
+            return False
+            
+        if not all(char.isalpha() or char.isspace() for char in name):
+            messagebox.showerror("Error", "Subcategory name must contain only letters and spaces")
+            return False
+            
+        try:
+            p_value = float(percentage)
+            if p_value <= 0:
+                messagebox.showerror("Error", "Percentage must be greater than zero")
+                return False
+                
+            if (self.total_percentage + p_value) > 100:
+                messagebox.showerror("Error", "Total percentage cannot exceed 100%")
+                return False
+                
+        except ValueError:
+            messagebox.showerror("Error", "Please enter a valid number for percentage")
+            return False
+            
+        return True
+
+
+def save_subcategories(self):
+    pass
+
