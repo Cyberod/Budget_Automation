@@ -376,6 +376,62 @@ class CustomPlanWindow:
         PlanSelectionWindow(self.root)
 
 
+    def save_plan(self):
+        plan_name = self.plan_name_var.get().strip()
+        
+        if not plan_name:
+            messagebox.showerror("Error", "Please enter a plan name")
+            return
+            
+        if plan_name.isdigit():
+            messagebox.showerror("Error", "Plan name cannot be only numbers")
+            return
+            
+        # Clear main frame and start subcategory process
+        self.main_frame.destroy()
+        self.start_subcategory_flow(plan_name)
+    
+    def start_subcategory_flow(self, plan_name):
+        self.plan_name = plan_name
+        self.current_category_index = 0
+        self.subcategories_data = {}
+        
+        # Start with first category
+        self.show_next_category_subcategories()
+    
+    def show_next_category_subcategories(self):
+        if self.current_category_index < len(self.categories):
+            category = self.categories[self.current_category_index]
+            percentage = self.percentages[self.current_category_index]
+            amount = 100 * (percentage / 100)  # Placeholder amount, will be updated with actual budget
+            
+            def on_subcategories_complete(subcats):
+                self.subcategories_data[category] = subcats
+                self.current_category_index += 1
+                self.show_next_category_subcategories()
+            
+            SubcategoryWindow(
+                self.root,
+                category,
+                amount,
+                on_complete=on_subcategories_complete
+            )
+        else:
+            # All categories done, save the complete plan
+            self.save_complete_plan()
+    
+    def save_complete_plan(self):
+        budget_plan = {}
+        for category, percentage in zip(self.categories, self.percentages):
+            budget_plan[category] = percentage
+        
+        save_budget_plan(self.plan_name, budget_plan, self.subcategories_data)
+        messagebox.showinfo("Success", "Budget plan saved successfully!")
+        
+        # Return to plan selection
+        PlanSelectionWindow(self.root)
+
+
 class ResultsWindow:
     def __init__(self, root, category_amounts, plan):
         self.root = root
@@ -424,10 +480,11 @@ class ResultsWindow:
 
 
 class SubcategoryWindow:
-    def __init__(self, root, category_name, category_amount):
+    def __init__(self, root, category_name, category_amount, on_complete):
         self.root = root
         self.category_name = category_name
         self.category_amount = category_amount
+        self.on_complete = on_complete
         self.subcategories = {}
         self.total_percentage = 0
         self.create_widgets()
@@ -560,6 +617,8 @@ class SubcategoryWindow:
         return True
 
 
-def save_subcategories(self):
-    pass
+    def save_subcategories(self):
+        if self.total_percentage == 100:
+            self.main_frame.destroy()
+            self.on_complete(self.subcategories)
 

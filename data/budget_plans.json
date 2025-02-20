@@ -65,5 +65,33 @@
                 "subcategories": {}
             }
         }
+    },
+    "Ash": {
+        "categories": {
+            "EXP": {
+                "percentage": 40.0,
+                "subcategories": {
+                    "AB": {
+                        "percentage": 100.0
+                    }
+                }
+            },
+            "INV": {
+                "percentage": 40.0,
+                "subcategories": {
+                    "CD": {
+                        "percentage": 100.0
+                    }
+                }
+            },
+            "SAV": {
+                "percentage": 20.0,
+                "subcategories": {
+                    "EF": {
+                        "percentage": 100.0
+                    }
+                }
+            }
+        }
     }
 }
