@@ -1,5 +1,5 @@
-from cli import run_cli
-from gui import run_gui
+from src.cli.cli import run_cli
+from src.gui.gui import run_gui
 
 import sys
 

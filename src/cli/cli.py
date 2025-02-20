@@ -1,8 +1,8 @@
-from plan import choose_budget_plan, get_custom_plan
-from utils import get_valid_number
-from calculations import calculate_category_amounts
-from storage import save_budget_plan, load_budget_plans
-from subcategories import get_subcategories
+from src.core.plan import choose_budget_plan, get_custom_plan
+from src.cli.utils import get_valid_number
+from src.core.calculations import calculate_category_amounts
+from src.core.storage import save_budget_plan, load_budget_plans
+from src.core.subcategories import get_subcategories
 
 def run_cli():
     print("💰 Welcome to the Budget Automation System! 💰")

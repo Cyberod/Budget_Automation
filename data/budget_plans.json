@@ -1,0 +1,69 @@
+{
+    "Biz": {
+        "categories": {
+            "Expense": {
+                "percentage": 40.0,
+                "subcategories": {
+                    "Transportation": {
+                        "percentage": 40.0
+                    },
+                    "Worker Salary": {
+                        "percentage": 60.0
+                    }
+                }
+            },
+            "Invest": {
+                "percentage": 50.0,
+                "subcategories": {
+                    "crypto": {
+                        "percentage": 100.0
+                    }
+                }
+            },
+            "Savings": {
+                "percentage": 10.0,
+                "subcategories": {}
+            }
+        }
+    },
+    "Godwin": {
+        "categories": {
+            "Needs": {
+                "percentage": 40.0,
+                "subcategories": {}
+            },
+            "Wants": {
+                "percentage": 20.0,
+                "subcategories": {}
+            },
+            "Savings": {
+                "percentage": 20.0,
+                "subcategories": {}
+            },
+            "Tithe": {
+                "percentage": 10.0,
+                "subcategories": {}
+            },
+            "Debt": {
+                "percentage": 10.0,
+                "subcategories": {}
+            }
+        }
+    },
+    "Test": {
+        "categories": {
+            "EXP": {
+                "percentage": 40.0,
+                "subcategories": {}
+            },
+            "INV": {
+                "percentage": 40.0,
+                "subcategories": {}
+            },
+            "SAV": {
+                "percentage": 20.0,
+                "subcategories": {}
+            }
+        }
+    }
+}

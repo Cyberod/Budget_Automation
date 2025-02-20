@@ -1,7 +1,7 @@
 import json
 import os
 
-FILE_PATH = 'budget_plans.json'
+FILE_PATH = './data/budget_plans.json'
 
 def save_budget_plan(plan_name, budget_plan, subcategories):
     """Save custom budget plans to storage."""

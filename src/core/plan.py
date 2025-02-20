@@ -1,5 +1,5 @@
 
-from storage import save_budget_plan, load_budget_plans
+from src.core.storage import save_budget_plan, load_budget_plans
 
 
 def choose_budget_plan():
