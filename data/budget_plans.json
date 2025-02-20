@@ -65,5 +65,21 @@
                 "subcategories": {}
             }
         }
+    },
+    "Archer": {
+        "categories": {
+            "INV": {
+                "percentage": 20.0,
+                "subcategories": {}
+            },
+            "EXP": {
+                "percentage": 20.0,
+                "subcategories": {}
+            },
+            "Savings": {
+                "percentage": 60.0,
+                "subcategories": {}
+            }
+        }
     }
 }

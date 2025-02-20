@@ -255,14 +255,14 @@ class CustomPlanWindow:
 
         ttk.Label(name_frame, text="Plan Name:").pack(side='left')
         self.plan_name_var = tk.StringVar()
-        ttk.Entry(name_frame, textvariable=self.plan_name_var)
+        ttk.Entry(name_frame, textvariable=self.plan_name_var).pack(side='left', padx=5)
 
         # Category Entry Section
         category_frame = ttk.Frame(self.main_frame)
-        category_frame.pack(pady=10, file='x')
+        category_frame.pack(pady=10, fill='x')
 
         self.category_var = tk.StringVar()
-        self.prcentage_var = tk.StringVar()
+        self.percentage_var = tk.StringVar()
 
 
         ttk.Label(category_frame, text="Category:").pack(side='left')
