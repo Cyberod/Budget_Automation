@@ -1,6 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from src.core.storage import load_budget_plans
+from src.core.calculations import calculate_category_amounts
+
+
 
 class WelcomeWindow:
     def __init__(self, root):
@@ -208,20 +211,81 @@ class AmountInputWindow:
         )
         continue_btn.pack(pady=10)
 
+    
+    def process_amount(self):
+        try:
+            amount = float(self.amount_var.get())
+            if amount <= 0:
+                messagebox.showerror("Invalid Input", "Amount must be Greater than zero")
+                return
+
+            # Calculate amounts based on plan's percentage
+            if isinstance(self.plan, dict):
+                if 'categories' in self.plan:   #Custom plan Format
+                    percentages = {cat: details['percentage']
+                                   for cat, details in self.plan['categories'].items()}
+                else:   # Predefined plan format
+                    percentages = self.plan
+            category_amounts = calculate_category_amounts(amount, percentages)  
+
+            # Clear screen and show results
+            self.main_frame.destroy()
+            ResultsWindow(self.root, category_amounts, self.plan)
+
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter a valid Number")
+
+
+
 class CustomPlanWindow:
     def __init__(self, root):
         self.root = root
+        self.categories = []
+        self.percentages = []
         self.create_widgets()
     
     def create_widgets(self):
         self.main_frame = ttk.Frame(self.root, padding="20")
         self.main_frame.pack(expand=True, fill='both')
         
-        title_label = ttk.Label(
+        # Plan name entry
+        name_frame = ttk.Frame(self.main_frame)
+        name_frame.pack(pady=10, fill='x')
+
+        ttk.Label(name_frame, text="Plan Name:").pack(side='left')
+        self.plan_name_var = tk.StringVar()
+        ttk.Entry(name_frame, textvariable=self.plan_name_var)
+
+        # Category Entry Section
+        category_frame = ttk.Frame(self.main_frame)
+        category_frame.pack(pady=10, file='x')
+
+        self.category_var = tk.StringVar()
+        self.prcentage_var = tk.StringVar()
+
+
+        ttk.Label(category_frame, text="Category:").pack(side='left')
+        ttk.Entry(category_frame, textvariable=self.category_var).pack(side='left', padx=5)
+        
+        ttk.Label(category_frame, text="Percentage:").pack(side='left')
+        ttk.Entry(category_frame, textvariable=self.percentage_var).pack(side='left', padx=5)
+        
+        ttk.Button(category_frame, text="Add Category", 
+                   command=self.add_category).pack(side='left', padx=5)
+        
+        # Display added categories
+        self.categories_display = ttk.Frame(self.main_frame)
+        self.categories_display.pack(pady=10, fill='x')
+        
+        # Save button
+        self.save_btn = ttk.Button(
             self.main_frame,
-            text="Create Custom Budget Plan",
-            font=('Arial', 14, 'bold')
+            text="Save Plan",
+            command=self.save_plan,
+            state='disabled'
         )
-        title_label.pack(pady=10)
+        self.save_btn.pack(pady=10)
+
+
 
 
