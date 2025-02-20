@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from src.core.storage import load_budget_plans
+from src.core.storage import load_budget_plans, save_budget_plan
 from src.core.calculations import calculate_category_amounts
+
 
 
 
@@ -286,6 +287,139 @@ class CustomPlanWindow:
         )
         self.save_btn.pack(pady=10)
 
+    def add_category(self):
+        category = self.category_var.get().strip()
+        percentage = self.percentage_var.get().strip()
+        
+        if self.validate_category_input(category, percentage):
+            # Add to our tracking lists
+            self.categories.append(category)
+            self.percentages.append(float(percentage))
+            
+            # Create display row for this category
+            row_frame = ttk.Frame(self.categories_display)
+            row_frame.pack(fill='x', pady=2)
+            
+            ttk.Label(
+                row_frame,
+                text=f"{category}: {percentage}%"
+            ).pack(side='left')
+            
+            # Clear input fields
+            self.category_var.set("")
+            self.percentage_var.set("")
+            
+            # Update total and check if we can enable save
+            total = sum(self.percentages)
+            if total == 100:
+                self.save_btn['state'] = 'normal'
+            elif total > 100:
+                messagebox.showerror(
+                    "Error",
+                    "Total percentage exceeds 100%. Please adjust categories."
+                )        
+
+
+    def validate_category_input(self, category, percentage):
+        if not category:
+            messagebox.showerror("Error", "Category name cannot be empty")
+            return False
+            
+        if not all(char.isalpha() or char.isspace() for char in category):
+            messagebox.showerror("Error", "Category name must contain only letters and spaces")
+            return False
+            
+        try:
+            p_value = float(percentage)
+            if p_value <= 0:
+                messagebox.showerror("Error", "Percentage must be greater than zero")
+                return False
+                
+            current_total = sum(self.percentages)
+            if (current_total + p_value) > 100:
+                messagebox.showerror("Error", "Total percentage cannot exceed 100%")
+                return False
+                
+        except ValueError:
+            messagebox.showerror("Error", "Please enter a valid number for percentage")
+            return False
+            
+        return True
+    
+
+    def save_plan(self):
+        plan_name = self.plan_name_var.get().strip()
+        
+        if not plan_name:
+            messagebox.showerror("Error", "Please enter a plan name")
+            return
+            
+        if plan_name.isdigit():
+            messagebox.showerror("Error", "Plan name cannot be only numbers")
+            return
+            
+        # Create plan structure
+        budget_plan = {}
+        subcategories = {}
+        
+        for category, percentage in zip(self.categories, self.percentages):
+            budget_plan[category] = percentage
+            subcategories[category] = {}  # Empty subcategories for now
+            
+        # Save to storage
+        save_budget_plan(plan_name, budget_plan, subcategories)
+        
+        messagebox.showinfo("Success", "Budget plan saved successfully!")
+        
+        # Return to plan selection
+        self.main_frame.destroy()
+        PlanSelectionWindow(self.root)
+
+
+class ResultsWindow:
+    def __init__(self, root, category_amounts, plan):
+        self.root = root
+        self.amounts = category_amounts
+        self.plan = plan
+        self.create_widgets()
+    
+    def create_widgets(self):
+        self.main_frame = ttk.Frame(self.root, padding="20")
+        self.main_frame.pack(expand=True, fill='both')
+        
+        ttk.Label(
+            self.main_frame,
+            text="Your Budget Breakdown",
+            font=('Arial', 14, 'bold')
+        ).pack(pady=10)
+        
+        # Display each category and amount
+        for category, amount in self.amounts.items():
+            category_frame = ttk.Frame(self.main_frame)
+            category_frame.pack(fill='x', pady=5)
+            
+            ttk.Label(
+                category_frame,
+                text=f"{category}:",
+                font=('Arial', 11)
+            ).pack(side='left')
+            
+            ttk.Label(
+                category_frame,
+                text=f"${amount:,.2f}",
+                font=('Arial', 11, 'bold')
+            ).pack(side='right')
+        
+        # New Plan button
+        ttk.Button(
+            self.main_frame,
+            text="Create New Budget",
+            command=self.start_new
+        ).pack(pady=20)
+    
+    def start_new(self):
+        self.main_frame.destroy()
+        PlanSelectionWindow(self.root)
 
 
 
