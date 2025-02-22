@@ -26,30 +26,6 @@
             }
         }
     },
-    "Godwin": {
-        "categories": {
-            "Needs": {
-                "percentage": 40.0,
-                "subcategories": {}
-            },
-            "Wants": {
-                "percentage": 20.0,
-                "subcategories": {}
-            },
-            "Savings": {
-                "percentage": 20.0,
-                "subcategories": {}
-            },
-            "Tithe": {
-                "percentage": 10.0,
-                "subcategories": {}
-            },
-            "Debt": {
-                "percentage": 10.0,
-                "subcategories": {}
-            }
-        }
-    },
     "Test": {
         "categories": {
             "EXP": {
@@ -110,6 +86,40 @@
                         "percentage": 50.0
                     }
                 }
+            },
+            "Tithe": {
+                "percentage": 10.0,
+                "subcategories": {}
+            }
+        }
+    },
+    "Business": {
+        "categories": {
+            "Expenses": {
+                "percentage": 30.0,
+                "subcategories": {
+                    "Logistics": {
+                        "percentage": 40.0
+                    },
+                    "Rent": {
+                        "percentage": 60.0
+                    }
+                }
+            },
+            "Invesment": {
+                "percentage": 40.0,
+                "subcategories": {
+                    "Crypto": {
+                        "percentage": 50.0
+                    },
+                    "Real Estate": {
+                        "percentage": 50.0
+                    }
+                }
+            },
+            "Savings": {
+                "percentage": 20.0,
+                "subcategories": {}
             },
             "Tithe": {
                 "percentage": 10.0,

@@ -25,13 +25,13 @@ def choose_budget_plan():
     while True:
         try:
             max_choice = len(saved_plans) + start_index 
-            choice = (input(f"Enter your chouce (1 - {max_choice})"))
+            choice = (input(f"Enter your choice (1 - {max_choice})"))
 
             if choice == "quit":
                 print("Thank you for using Budget Automation System. Goodbye! 👋")
                 sys.exit(0)
 
-            choice = int(input(f"Enter your chouce (1 - {max_choice})"))
+            choice = int(choice)
 
             if 1 <= choice <= max_choice:
                 return choice
