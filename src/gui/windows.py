@@ -405,17 +405,26 @@ class CustomPlanWindow:
             percentage = self.percentages[self.current_category_index]
             amount = 100 * (percentage / 100)  # Placeholder amount, will be updated with actual budget
             
-            def on_subcategories_complete(subcats):
-                self.subcategories_data[category] = subcats
+            if messagebox.askyesno(
+                "Add Subcategories",
+                f"Would you like to add subcategories for {category}?"
+            ):
+                def on_subcategories_complete(subcats):
+                    self.subcategories_data[category] = subcats
+                    self.current_category_index += 1
+                    self.show_next_category_subcategories()
+                
+                SubcategoryWindow(
+                    self.root,
+                    category,
+                    amount,
+                    on_complete=on_subcategories_complete
+                )
+            else:
+                # Skiŝ category for this Subcategory
+                self.subcategories_data[category] = {}  # Leaves the subcategory empty
                 self.current_category_index += 1
                 self.show_next_category_subcategories()
-            
-            SubcategoryWindow(
-                self.root,
-                category,
-                amount,
-                on_complete=on_subcategories_complete
-            )
         else:
             # All categories done, save the complete plan
             self.save_complete_plan()
@@ -449,22 +458,46 @@ class ResultsWindow:
             font=('Arial', 14, 'bold')
         ).pack(pady=10)
         
-        # Display each category and amount
+        # Create scrollable frame for results
+        canvas = tk.Canvas(self.main_frame)
+        scrollbar = ttk.Scrollbar(self.main_frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Display categories and their subcategories
         for category, amount in self.amounts.items():
-            category_frame = ttk.Frame(self.main_frame)
-            category_frame.pack(fill='x', pady=5)
+            # Category frame
+            category_frame = ttk.LabelFrame(scrollable_frame, text=category, padding="5")
+            category_frame.pack(fill='x', pady=5, padx=5)
             
+            # Main category amount
             ttk.Label(
                 category_frame,
-                text=f"{category}:",
-                font=('Arial', 11)
-            ).pack(side='left')
-            
-            ttk.Label(
-                category_frame,
-                text=f"${amount:,.2f}",
+                text=f"Total: ${amount:,.2f}",
                 font=('Arial', 11, 'bold')
-            ).pack(side='right')
+            ).pack(anchor='w')
+            
+            # Display subcategories if they exist
+            if isinstance(self.plan, dict) and 'categories' in self.plan:
+                subcats = self.plan['categories'].get(category, {}).get('subcategories', {})
+                for subcat, details in subcats.items():
+                    subcat_amount = amount * (details['percentage'] / 100)
+                    ttk.Label(
+                        category_frame,
+                        text=f"  • {subcat}: ${subcat_amount:,.2f} ({details['percentage']}%)",
+                        font=('Arial', 10)
+                    ).pack(anchor='w', padx=20)
+        
+        # Pack the scrollable components
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
         
         # New Plan button
         ttk.Button(
@@ -621,4 +654,7 @@ class SubcategoryWindow:
         if self.total_percentage == 100:
             self.main_frame.destroy()
             self.on_complete(self.subcategories)
+
+
+
 

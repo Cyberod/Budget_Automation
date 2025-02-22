@@ -1,5 +1,6 @@
 
-from src.core.storage import save_budget_plan, load_budget_plans
+from src.core.storage import load_budget_plans
+import sys
 
 
 def choose_budget_plan():
@@ -8,6 +9,7 @@ def choose_budget_plan():
     print("1. 50-30-20 (Conservative)")
     print("2. 60-20-20 (Moderate)")
     print("3. 70-10-20 (Aggressive)")
+  
 
     # load and display saved custom plans
 
@@ -18,17 +20,25 @@ def choose_budget_plan():
         print(f"{i}. {plan_name} (Custom)")
 
     print(f"{len(saved_plans) + start_index}. Create new custom Plan")
+    print("Type 'quit' to exit")
 
     while True:
         try:
             max_choice = len(saved_plans) + start_index 
+            choice = (input(f"Enter your chouce (1 - {max_choice})"))
+
+            if choice == "quit":
+                print("Thank you for using Budget Automation System. Goodbye! 👋")
+                sys.exit(0)
+
             choice = int(input(f"Enter your chouce (1 - {max_choice})"))
+
             if 1 <= choice <= max_choice:
                 return choice
             else:
                 print("Invalid choice. Please enter a valid option.")
         except ValueError:
-            print("Invalid input. Please enter a number.")
+            print("Invalid input. Please enter a number or 'quit' to exit.")
 
         
 

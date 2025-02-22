@@ -41,7 +41,7 @@ def run_cli():
         }
             for category, subcats in category_subcategories.items()
             })
-        
+
 
     else:
         # Get the saved custom Plan
