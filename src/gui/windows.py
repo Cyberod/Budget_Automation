@@ -16,7 +16,7 @@ class WelcomeWindow:
         self.root.title("Budget Automation System")
         # Centers the window on screen
         window_width = 600
-        window_height = 400
+        window_height = 600
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         center_x = int(screen_width/2 - window_width/2)
